@@ -137,8 +137,8 @@
     left: auto !important;
     top: auto !important;
     transform: none !important;
-    width: 380px !important;
-    max-height: 600px !important;
+    width: clamp(300px, 90vw, 380px) !important;
+    max-height: clamp(400px, 75vh, 600px) !important;
     background-color: #1A1A2E !important;
     border: 1px solid #333 !important;
     border-radius: 16px !important;
@@ -203,3 +203,41 @@ div:has(.fa-marker-download) + div button p::before {
     color: #FAFAFA;
 }
 
+/* ===================== Responsive Media Queries ===================== */
+@media (max-width: 768px) {
+    /* Adjust header padding and typography for mobile */
+    .stApp {
+        padding-top: 10px;
+    }
+    
+    /* Make overview cards stack with consistent spacing */
+    .overview-card {
+        margin-bottom: 15px;
+        padding: 16px;
+    }
+    
+    .overview-card h3 {
+        font-size: 18px;
+    }
+    
+    /* Adjust Chatbot Button placement on smaller screens */
+    [data-testid="stPopover"] {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    /* Adjust popover body position */
+    [data-testid="stPopoverBody"] {
+        bottom: 85px !important;
+        right: 15px !important;
+    }
+    
+    /* Make metric cards slightly more compact */
+    .metric-card {
+        padding: 12px;
+    }
+    
+    .metric-value {
+        font-size: 20px;
+    }
+}

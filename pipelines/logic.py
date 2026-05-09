@@ -9,7 +9,7 @@ import streamlit as st
 # Load environment variables (API keys)
 load_dotenv()
 
-# Initialize Groq Client robustly
+# Initialize Groq Client
 def initialize_groq():
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
@@ -17,7 +17,6 @@ def initialize_groq():
             api_key = st.secrets.get("GROQ_API_KEY")
         except Exception:
             pass
-    
     if api_key:
         return Groq(api_key=api_key)
     return None
