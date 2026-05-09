@@ -12,7 +12,13 @@ load_dotenv(override=True)
 
 @st.cache_resource
 def get_groq_client():
-    return Groq(api_key=os.getenv("GROQ_API_KEY"))
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        try:
+            api_key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            pass
+    return Groq(api_key=api_key)
 
 # ── Page Config ────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="NexusRAG Dashboard", layout="wide", initial_sidebar_state="collapsed")

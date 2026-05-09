@@ -4,16 +4,25 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 
+import streamlit as st
+
 # Load environment variables (API keys)
 load_dotenv()
 
-# Initialize Groq Client
-# It will automatically look for GROQ_API_KEY in the environment
-try:
-    client = Groq()
-except Exception as e:
-    client = None
-    print(f"Failed to initialize Groq client: {e}")
+# Initialize Groq Client robustly
+def initialize_groq():
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        try:
+            api_key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            pass
+    
+    if api_key:
+        return Groq(api_key=api_key)
+    return None
+
+client = initialize_groq()
 
 def run_llm_only(query):
     """
