@@ -1,0 +1,6 @@
+streamlit
+groq
+pandas
+datasets
+tiktoken
+python-dotenv
