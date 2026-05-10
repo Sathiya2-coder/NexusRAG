@@ -5,3 +5,7 @@ __pycache__/
 .venv/
 venv/
 env/
+data/chroma_db/
+data/knowledge_graph.pkl
+*.sqlite3
+*.pkl

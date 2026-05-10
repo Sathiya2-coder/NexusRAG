@@ -4,3 +4,7 @@ pandas
 datasets
 tiktoken
 python-dotenv
+chromadb
+sentence-transformers
+networkx
+spacy

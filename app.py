@@ -5,10 +5,15 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 from pipelines.logic import run_llm_only, run_basic_rag, run_graph_rag, generate_summary
+from pipelines.vector_db import initialize_vector_db
+from pipelines.graph_db import initialize_knowledge_graph, get_graph_statistics
 from components import render_header, render_footer
 
 # Load API keys
 load_dotenv(override=True)
+
+# ── PAGE CONFIG (MUST BE FIRST) ────────────────────────────────────────────────
+st.set_page_config(page_title="NexusRAG Dashboard", layout="wide", initial_sidebar_state="collapsed")
 
 @st.cache_resource
 def get_groq_client():
@@ -20,8 +25,31 @@ def get_groq_client():
             pass
     return Groq(api_key=api_key)
 
-# ── Page Config ────────────────────────────────────────────────────────────────
-st.set_page_config(page_title="NexusRAG Dashboard", layout="wide", initial_sidebar_state="collapsed")
+# Initialize vector database on app startup
+@st.cache_resource
+def init_vector_db():
+    """Initialize the vector database once on app startup"""
+    try:
+        initialize_vector_db()
+        return True
+    except Exception as e:
+        st.error(f"Error initializing vector DB: {e}")
+        return False
+
+# Initialize knowledge graph on app startup
+@st.cache_resource
+def init_knowledge_graph():
+    """Initialize the knowledge graph once on app startup"""
+    try:
+        initialize_knowledge_graph()
+        return True
+    except Exception as e:
+        st.error(f"Error initializing knowledge graph: {e}")
+        return False
+
+# Initialize both DBs
+vector_db_ready = init_vector_db()
+graph_db_ready = init_knowledge_graph()
 
 with open("style.css", "r") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -73,12 +101,31 @@ st.markdown("<hr style='border-color:#333; margin: 40px 0;'>", unsafe_allow_html
 st.markdown("<h2 style='color:#FAFAFA;margin-top:20px;'>1. Benchmark Dashboard</h2>", unsafe_allow_html=True)
 st.markdown("Compare **LLM-Only**, **Basic RAG**, and **GraphRAG** side-by-side.")
 
+# Show database status
+col1, col2 = st.columns(2)
+with col1:
+    if vector_db_ready:
+        st.markdown('<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i>Vector DB Ready - Basic RAG has context retrieval', unsafe_allow_html=True)
+    else:
+        st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>Vector Database not initialized', unsafe_allow_html=True)
+
+with col2:
+    if graph_db_ready:
+        graph_stats = get_graph_statistics()
+        if graph_stats["status"] == "ready":
+            st.markdown(f'<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i>Graph DB Ready ({graph_stats["nodes"]} entities)', unsafe_allow_html=True)
+        else:
+            st.markdown('<i class="fa-solid fa-circle-info" style="color: #2196F3; margin-right: 8px;"></i>Graph Database ready (building...)', unsafe_allow_html=True)
+    else:
+        st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>Knowledge Graph not initialized', unsafe_allow_html=True)
+
+
 query = st.text_area("Enter your query:", height=100,
     placeholder="e.g. How do the entities connected to Project X relate to the recent financial outcomes?")
 
 if st.button("Run Benchmark", type="primary"):
     if not query.strip():
-        st.warning("Please enter a query to run the benchmark.")
+        st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>Please enter a query to run the benchmark.', unsafe_allow_html=True)
     else:
         with st.spinner("Running pipelines..."):
             res_llm   = run_llm_only(query)
@@ -222,7 +269,7 @@ with st.popover("💬", help="Chat with the Dataset"):
                 )
                 full_response = completion.choices[0].message.content
             except Exception as e:
-                full_response = f"⚠️ Error: {str(e)}"
+                full_response = f"Error: {str(e)}"
             message_placeholder.markdown(full_response)
 
         st.session_state.messages.append({"role": "assistant", "content": full_response})

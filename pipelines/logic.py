@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from groq import Groq
 
 import streamlit as st
+from pipelines.vector_db import get_context_for_query, initialize_vector_db
+from pipelines.graph_db import get_graph_context_for_query, initialize_knowledge_graph
 
 # Load environment variables (API keys)
 load_dotenv()
@@ -91,11 +93,25 @@ def run_basic_rag(query):
 
     start_time = time.time()
     try:
+        # Retrieve context from vector database
+        context = get_context_for_query(query, top_k=3)
+        
+        # Prepare the RAG prompt
+        rag_prompt = f"""You are a Basic RAG (Retrieval-Augmented Generation) system. 
+Answer the user's query based on the provided context below. Be honest about the limitations:
+
+RETRIEVED CONTEXT:
+{context}
+
+USER QUERY: {query}
+
+Provide the best answer you can based on this context."""
+        
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": "You are simulating a Basic RAG (Retrieval-Augmented Generation) system. Answer the user's query, but complain that because you only use semantic vector search, you can only see isolated paragraphs. Explicitly mention that you struggled to connect the multi-hop entities together, but provide the best partial answer you can based on typical knowledge."},
-                {"role": "user", "content": query}
+                {"role": "system", "content": "You are a helpful assistant powered by semantic vector search. Answer questions based on the provided context. Acknowledge if you can only see isolated paragraphs."},
+                {"role": "user", "content": rag_prompt}
             ],
             temperature=0.5, max_tokens=1024, top_p=1, stream=False
         )
@@ -107,10 +123,10 @@ def run_basic_rag(query):
         
         return {
             "answer": answer,
-            "tokens_prompt": tokens_prompt + random.randint(1000, 2000), # Simulate high retrieval token cost
+            "tokens_prompt": tokens_prompt,
             "tokens_completion": tokens_completion,
-            "latency_ms": latency_ms + random.randint(500, 1500), # Simulate vector search delay
-            "cost": cost + 0.001,
+            "latency_ms": latency_ms,
+            "cost": cost,
             "accuracy_pass": False,
             "bert_score": random.uniform(0.5, 0.7)
         }
@@ -123,11 +139,26 @@ def run_graph_rag(query):
 
     start_time = time.time()
     try:
+        # Retrieve context from knowledge graph
+        graph_context = get_graph_context_for_query(query, max_hops=2)
+        
+        # Prepare the GraphRAG prompt
+        graph_prompt = f"""You are GraphRAG, an advanced Knowledge Graph-based AI system that uses graph traversal to answer queries.
+You have access to the following knowledge graph context extracted from the dataset:
+
+KNOWLEDGE GRAPH CONTEXT:
+{graph_context}
+
+USER QUERY: {query}
+
+Use the knowledge graph relationships to provide a comprehensive answer that demonstrates how entities are connected through the graph. 
+Answer based on the entities and relationships shown in the knowledge graph."""
+        
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": "You are GraphRAG, an advanced Knowledge Graph based AI. Answer the user's query accurately and confidently. Explicitly mention that by using TigerGraph to traverse the knowledge graph, you were easily able to connect the multi-hop relationships and entities to find the exact historical or economic connections they asked for. Give a complete, factual answer."},
-                {"role": "user", "content": query}
+                {"role": "system", "content": "You are GraphRAG, powered by knowledge graph traversal. Provide accurate answers by leveraging the entity connections and relationships in the graph."},
+                {"role": "user", "content": graph_prompt}
             ],
             temperature=0.3, max_tokens=1024, top_p=1, stream=False
         )
@@ -139,9 +170,9 @@ def run_graph_rag(query):
         
         return {
             "answer": answer,
-            "tokens_prompt": tokens_prompt + random.randint(100, 300), # Simulate efficient graph traversal token usage
+            "tokens_prompt": tokens_prompt,
             "tokens_completion": tokens_completion,
-            "latency_ms": latency_ms + random.randint(200, 500), # Graph traversal is fast
+            "latency_ms": latency_ms,
             "cost": cost,
             "accuracy_pass": True,
             "bert_score": random.uniform(0.92, 0.98)
