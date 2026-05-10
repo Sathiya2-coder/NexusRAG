@@ -46,50 +46,58 @@ def chunk_text(text, chunk_size=500, overlap=100):
 
 def initialize_vector_db():
     """Initialize the vector database with dataset chunks"""
-    collection = get_vector_db()
-    
-    # Check if already populated
-    if collection.count() > 0:
-        print(f"Vector DB already initialized with {collection.count()} documents")
+    try:
+        collection = get_vector_db()
+        
+        # Check if already populated
+        if collection.count() > 0:
+            print(f"Vector DB already initialized with {collection.count()} documents")
+            return collection
+        
+        print("Initializing vector database...")
+        dataset_path = "data/dataset.txt"
+        
+        if not os.path.exists(dataset_path):
+            print(f"Warning: {dataset_path} not found. Vector DB will be empty.")
+            return collection
+        
+        # Load and chunk the dataset
+        with open(dataset_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        
+        chunks = chunk_text(content, chunk_size=500, overlap=100)
+        print(f"Created {len(chunks)} chunks from dataset")
+        
+        # Add chunks to the collection in batches
+        batch_size = 100
+        embedding_model = get_embedding_model()
+        
+        for i in range(0, len(chunks), batch_size):
+            batch_chunks = chunks[i:i + batch_size]
+            batch_ids = [f"doc_{i+j}" for j in range(len(batch_chunks))]
+            
+            # Generate embeddings for this batch
+            embeddings = embedding_model.encode(batch_chunks)
+            
+            # Add to collection
+            collection.add(
+                ids=batch_ids,
+                embeddings=embeddings,
+                documents=batch_chunks,
+                metadatas=[{"chunk_index": i+j} for j in range(len(batch_chunks))]
+            )
+            
+            print(f"Added {i + len(batch_chunks)}/{len(chunks)} chunks")
+        
+        print(f"Vector DB initialized with {collection.count()} documents")
         return collection
-    
-    print("Initializing vector database...")
-    dataset_path = "data/dataset.txt"
-    
-    if not os.path.exists(dataset_path):
-        print(f"Error: {dataset_path} not found. Please run 'python download_data.py' first.")
-        return collection
-    
-    # Load and chunk the dataset
-    with open(dataset_path, "r", encoding="utf-8") as f:
-        content = f.read()
-    
-    chunks = chunk_text(content, chunk_size=500, overlap=100)
-    print(f"Created {len(chunks)} chunks from dataset")
-    
-    # Add chunks to the collection in batches
-    batch_size = 100
-    embedding_model = get_embedding_model()
-    
-    for i in range(0, len(chunks), batch_size):
-        batch_chunks = chunks[i:i + batch_size]
-        batch_ids = [f"doc_{i+j}" for j in range(len(batch_chunks))]
-        
-        # Generate embeddings for this batch
-        embeddings = embedding_model.encode(batch_chunks)
-        
-        # Add to collection
-        collection.add(
-            ids=batch_ids,
-            embeddings=embeddings,
-            documents=batch_chunks,
-            metadatas=[{"chunk_index": i+j} for j in range(len(batch_chunks))]
-        )
-        
-        print(f"Added {i + len(batch_chunks)}/{len(chunks)} chunks")
-    
-    print(f"Vector DB initialized with {collection.count()} documents")
-    return collection
+    except Exception as e:
+        print(f"Error initializing vector DB: {e}")
+        try:
+            return get_vector_db()
+        except Exception as e2:
+            print(f"Error getting vector DB: {e2}")
+            return None
 
 
 def retrieve_documents(query, top_k=5):

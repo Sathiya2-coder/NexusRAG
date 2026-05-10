@@ -16,17 +16,24 @@ def get_graph_path():
 @st.cache_resource
 def initialize_knowledge_graph():
     """Initialize or load the knowledge graph"""
-    graph_path = get_graph_path()
-    
-    if os.path.exists(graph_path):
-        with open(graph_path, 'rb') as f:
-            graph = pickle.load(f)
-        print(f"Loaded existing knowledge graph with {graph.number_of_nodes()} nodes and {graph.number_of_edges()} edges")
+    try:
+        graph_path = get_graph_path()
+        
+        if os.path.exists(graph_path):
+            try:
+                with open(graph_path, 'rb') as f:
+                    graph = pickle.load(f)
+                print(f"Loaded existing knowledge graph with {graph.number_of_nodes()} nodes and {graph.number_of_edges()} edges")
+                return graph
+            except Exception as e:
+                print(f"Error loading graph from file: {e}")
+        
+        print("Creating new knowledge graph...")
+        graph = nx.DiGraph()
         return graph
-    
-    print("Creating new knowledge graph...")
-    graph = nx.DiGraph()
-    return graph
+    except Exception as e:
+        print(f"Error initializing knowledge graph: {e}")
+        return nx.DiGraph()
 
 
 def extract_entities_and_relationships(text, chunk_id):
