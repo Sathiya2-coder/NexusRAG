@@ -1,8 +1,17 @@
 import os
-import chromadb
-from chromadb.config import Settings
+import sys
 from sentence_transformers import SentenceTransformer
 import streamlit as st
+
+# Try to import chromadb, but make it optional
+try:
+    import chromadb
+    from chromadb.config import Settings
+    CHROMADB_AVAILABLE = True
+except (ImportError, AttributeError) as e:
+    print(f"Warning: ChromaDB not available: {e}")
+    CHROMADB_AVAILABLE = False
+    chromadb = None
 
 
 # Initialize the embedding model
@@ -16,19 +25,27 @@ def get_embedding_model():
 @st.cache_resource
 def get_vector_db():
     """Initialize ChromaDB with persistence"""
-    db_path = "data/chroma_db"
-    os.makedirs(db_path, exist_ok=True)
+    if not CHROMADB_AVAILABLE:
+        print("ChromaDB not available - returning None")
+        return None
     
-    # Initialize persistent ChromaDB client
-    client = chromadb.PersistentClient(path=db_path)
-    
-    # Get or create collection
-    collection = client.get_or_create_collection(
-        name="wikitext2",
-        metadata={"hnsw:space": "cosine"}
-    )
-    
-    return collection
+    try:
+        db_path = "data/chroma_db"
+        os.makedirs(db_path, exist_ok=True)
+        
+        # Initialize persistent ChromaDB client
+        client = chromadb.PersistentClient(path=db_path)
+        
+        # Get or create collection
+        collection = client.get_or_create_collection(
+            name="wikitext2",
+            metadata={"hnsw:space": "cosine"}
+        )
+        
+        return collection
+    except Exception as e:
+        print(f"Error initializing ChromaDB: {e}")
+        return None
 
 
 def chunk_text(text, chunk_size=500, overlap=100):
@@ -48,6 +65,10 @@ def initialize_vector_db():
     """Initialize the vector database with dataset chunks"""
     try:
         collection = get_vector_db()
+        
+        if collection is None:
+            print("Vector DB collection is None - skipping initialization")
+            return None
         
         # Check if already populated
         if collection.count() > 0:
@@ -93,35 +114,35 @@ def initialize_vector_db():
         return collection
     except Exception as e:
         print(f"Error initializing vector DB: {e}")
-        try:
-            return get_vector_db()
-        except Exception as e2:
-            print(f"Error getting vector DB: {e2}")
-            return None
+        return None
 
 
 def retrieve_documents(query, top_k=5):
     """Retrieve the most relevant documents for a query"""
     collection = get_vector_db()
     
-    if collection.count() == 0:
+    if collection is None or collection.count() == 0:
         return [], []
     
-    # Query the collection
-    results = collection.query(
-        query_texts=[query],
-        n_results=top_k,
-        include=["documents", "distances"]
-    )
-    
-    documents = results["documents"][0] if results["documents"] else []
-    distances = results["distances"][0] if results["distances"] else []
-    
-    # Convert distances to similarity scores (cosine similarity)
-    # Lower distance = higher similarity
-    scores = [1 - d for d in distances]
-    
-    return documents, scores
+    try:
+        # Query the collection
+        results = collection.query(
+            query_texts=[query],
+            n_results=top_k,
+            include=["documents", "distances"]
+        )
+        
+        documents = results["documents"][0] if results["documents"] else []
+        distances = results["distances"][0] if results["distances"] else []
+        
+        # Convert distances to similarity scores (cosine similarity)
+        # Lower distance = higher similarity
+        scores = [1 - d for d in distances]
+        
+        return documents, scores
+    except Exception as e:
+        print(f"Error retrieving documents: {e}")
+        return [], []
 
 
 def get_context_for_query(query, top_k=3):
