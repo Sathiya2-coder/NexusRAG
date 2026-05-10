@@ -28,6 +28,16 @@ def initialize_knowledge_graph():
             except Exception as e:
                 print(f"Error loading graph from file: {e}")
         
+        # Auto-build graph from dataset if empty and dataset exists
+        if os.path.exists("data/dataset.txt") and not os.path.exists(graph_path):
+            print("Auto-building knowledge graph from dataset...")
+            build_knowledge_graph_from_dataset()
+            if os.path.exists(graph_path):
+                with open(graph_path, 'rb') as f:
+                    graph = pickle.load(f)
+                print(f"Built knowledge graph with {graph.number_of_nodes()} nodes and {graph.number_of_edges()} edges")
+                return graph
+        
         print("Creating new knowledge graph...")
         graph = nx.DiGraph()
         return graph

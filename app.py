@@ -119,7 +119,7 @@ with col2:
         if graph_stats["status"] == "ready":
             st.markdown(f'<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i>Graph DB Ready ({graph_stats["nodes"]} entities)', unsafe_allow_html=True)
         elif graph_stats["status"] == "empty":
-            st.markdown('<i class="fa-solid fa-hourglass" style="color: #FF9800; margin-right: 8px;"></i>Graph Database Empty - Run: python setup_graph_db.py', unsafe_allow_html=True)
+            st.markdown('<i class="fa-solid fa-hourglass" style="color: #FF9800; margin-right: 8px;"></i>Graph Database building... (first load may take 2-3 minutes)', unsafe_allow_html=True)
         else:
             st.markdown('<i class="fa-solid fa-circle-info" style="color: #2196F3; margin-right: 8px;"></i>Graph Database Initializing...', unsafe_allow_html=True)
     else:
