@@ -3,13 +3,26 @@ import sys
 from sentence_transformers import SentenceTransformer
 import streamlit as st
 
-# Import chromadb - now required
-try:
-    import chromadb
-    CHROMADB_AVAILABLE = True
-except ImportError as e:
-    print(f"Error: ChromaDB required but not available: {e}")
-    CHROMADB_AVAILABLE = False
+# Lazy import chromadb to avoid telemetry issues
+chromadb = None
+CHROMADB_AVAILABLE = False
+
+def _ensure_chromadb():
+    """Lazy load chromadb on first use"""
+    global chromadb, CHROMADB_AVAILABLE
+    if chromadb is not None or CHROMADB_AVAILABLE == False:
+        if chromadb is not None:
+            return True
+    
+    try:
+        import chromadb as _chromadb
+        chromadb = _chromadb
+        CHROMADB_AVAILABLE = True
+        return True
+    except Exception as e:
+        print(f"Warning: Could not import chromadb: {e}")
+        CHROMADB_AVAILABLE = False
+        return False
 
 
 # Initialize the embedding model
@@ -23,6 +36,10 @@ def get_embedding_model():
 @st.cache_resource
 def get_vector_db():
     """Initialize ChromaDB with persistence"""
+    if not _ensure_chromadb():
+        print("ChromaDB not available - returning None")
+        return None
+    
     try:
         db_path = "data/chroma_db"
         os.makedirs(db_path, exist_ok=True)
@@ -39,6 +56,8 @@ def get_vector_db():
         return collection
     except Exception as e:
         print(f"Error initializing ChromaDB: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 

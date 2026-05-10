@@ -1,6 +1,10 @@
+# Disable telemetry to avoid Python 3.14 compatibility issues
+import os
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CHROMADB_DISABLE_TELEMETRY"] = "true"
+
 import time
 import random
-import os
 from dotenv import load_dotenv
 from groq import Groq
 

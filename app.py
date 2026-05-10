@@ -1,7 +1,11 @@
+# Disable telemetry to avoid Python 3.14 compatibility issues
+import os
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CHROMADB_DISABLE_TELEMETRY"] = "true"
+
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
-import os
 from dotenv import load_dotenv
 from groq import Groq
 from pipelines.logic import run_llm_only, run_basic_rag, run_graph_rag, generate_summary
