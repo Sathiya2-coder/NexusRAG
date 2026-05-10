@@ -3,15 +3,13 @@ import sys
 from sentence_transformers import SentenceTransformer
 import streamlit as st
 
-# Try to import chromadb, but make it optional
+# Import chromadb - now required
 try:
     import chromadb
-    from chromadb.config import Settings
     CHROMADB_AVAILABLE = True
-except (ImportError, AttributeError) as e:
-    print(f"Warning: ChromaDB not available: {e}")
+except ImportError as e:
+    print(f"Error: ChromaDB required but not available: {e}")
     CHROMADB_AVAILABLE = False
-    chromadb = None
 
 
 # Initialize the embedding model
@@ -25,10 +23,6 @@ def get_embedding_model():
 @st.cache_resource
 def get_vector_db():
     """Initialize ChromaDB with persistence"""
-    if not CHROMADB_AVAILABLE:
-        print("ChromaDB not available - returning None")
-        return None
-    
     try:
         db_path = "data/chroma_db"
         os.makedirs(db_path, exist_ok=True)
@@ -71,9 +65,13 @@ def initialize_vector_db():
             return None
         
         # Check if already populated
-        if collection.count() > 0:
-            print(f"Vector DB already initialized with {collection.count()} documents")
-            return collection
+        try:
+            count = collection.count()
+            if count > 0:
+                print(f"Vector DB already initialized with {count} documents")
+                return collection
+        except Exception as e:
+            print(f"Error checking collection count: {e}")
         
         print("Initializing vector database...")
         dataset_path = "data/dataset.txt"
@@ -114,21 +112,27 @@ def initialize_vector_db():
         return collection
     except Exception as e:
         print(f"Error initializing vector DB: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 
 def retrieve_documents(query, top_k=5):
     """Retrieve the most relevant documents for a query"""
-    collection = get_vector_db()
-    
-    if collection is None or collection.count() == 0:
-        return [], []
-    
     try:
+        collection = get_vector_db()
+        
+        if collection is None:
+            return [], []
+        
+        count = collection.count()
+        if count == 0:
+            return [], []
+        
         # Query the collection
         results = collection.query(
             query_texts=[query],
-            n_results=top_k,
+            n_results=min(top_k, count),
             include=["documents", "distances"]
         )
         
