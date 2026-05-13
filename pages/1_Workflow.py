@@ -143,7 +143,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<p class='center-text'>Explore three advanced inference pipelines designed for different use cases: direct LLM invocation, vector-based retrieval augmentation, and knowledge graph traversal. Each pipeline offers distinct advantages in accuracy, speed, and reasoning capability.</p>", unsafe_allow_html=True)
+st.markdown("<p class='center-text'>Explore three advanced inference pipelines designed for different use cases: direct LLM invocation, vector-based retrieval augmentation, and TigerGraph-powered knowledge graph traversal. Each pipeline offers distinct advantages in accuracy, speed, and reasoning capability. GraphRAG on TigerGraph enables explicit, factually-grounded multi-hop reasoning.</p>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PIPELINE COMPARISON SECTION
@@ -161,9 +161,9 @@ with col1:
 with col2:
     st.markdown("""<div class='pipeline-card' style='background: linear-gradient(135deg, rgba(255, 152, 0, 0.12), rgba(255, 152, 0, 0.06)); border: 2px solid rgba(255, 152, 0, 0.4); border-radius: 16px; padding: 28px; height: 100%; box-shadow: 0 8px 16px rgba(255, 152, 0, 0.1);'><div style='text-align: center; margin-bottom: 24px;'><div style='background: rgba(255, 152, 0, 0.15); border-radius: 12px; padding: 16px; display: inline-block; margin-bottom: 12px;'><i class='fa-solid fa-magnifying-glass' style='font-size: 40px; color: #FF9800;'></i></div><h3 style='color: #FF9800; margin: 0; font-size: 22px; font-weight: 600;'>Basic RAG</h3><p style='color: #FFB74D; font-size: 12px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'>Vector Search Retrieval</p></div><div style='background: rgba(255,255,255,0.04); border-radius: 10px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255, 152, 0, 0.2);'><p style='color: #E8E8E8; font-size: 13px; margin: 0 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>Execution Flow</p><div style='margin-top: 12px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 8px; border-left: 4px solid #FF9800;'><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-user' style='color: #FF9800; margin-right: 8px; font-size: 12px;'></i>User Query</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Vectorize & Search ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-table' style='color: #FF9800; margin-right: 8px; font-size: 12px;'></i>Retrieve Top-K Chunks</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Augment Prompt ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-brain' style='color: #FF9800; margin-right: 8px; font-size: 12px;'></i>Contextualized Response</p></div></div><div style='margin: 20px 0;'><p style='color: #66BB6A; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-check' style='margin-right: 6px;'></i>Advantages</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li>Grounds LLM in real data</li><li>Handles private/recent data</li><li>Industry standard approach</li></ul></div><div style='margin: 20px 0;'><p style='color: #FF9800; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-triangle-exclamation' style='margin-right: 6px; font-size: 12px;'></i>Limitations</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li>Fails on multi-hop reasoning</li><li>Misses cross-document links</li><li>Semantic ≠ Logical relevance</li></ul></div></div>""", unsafe_allow_html=True)
 
-# PIPELINE 3: GraphRAG
+# PIPELINE 3: GraphRAG on TigerGraph
 with col3:
-    st.markdown("""<div class='pipeline-card' style='background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(76, 175, 80, 0.06)); border: 2px solid rgba(76, 175, 80, 0.4); border-radius: 16px; padding: 28px; height: 100%; box-shadow: 0 8px 16px rgba(76, 175, 80, 0.1);'><div style='text-align: center; margin-bottom: 24px;'><div style='background: rgba(76, 175, 80, 0.15); border-radius: 12px; padding: 16px; display: inline-block; margin-bottom: 12px;'><i class='fa-solid fa-share-nodes' style='font-size: 40px; color: #4CAF50;'></i></div><h3 style='color: #4CAF50; margin: 0; font-size: 22px; font-weight: 600;'>GraphRAG</h3><p style='color: #66BB6A; font-size: 12px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'>Knowledge Graph Traversal</p></div><div style='background: rgba(255,255,255,0.04); border-radius: 10px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(76, 175, 80, 0.2);'><p style='color: #E8E8E8; font-size: 13px; margin: 0 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>Execution Flow</p><div style='margin-top: 12px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 8px; border-left: 4px solid #4CAF50;'><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-user' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>User Query</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Extract Entities ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-share-nodes' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>Multi-Hop Graph Traversal</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Explicit Relationships ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-brain' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>Accurate Response</p></div></div><div style='margin: 20px 0;'><p style='color: #66BB6A; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-star' style='margin-right: 6px; color: #FFD700;'></i>Advantages</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li><strong style='color: #66BB6A;'>100% factually accurate</strong></li><li>Perfect multi-hop reasoning</li><li>Explicit relationships</li><li>Lower token usage</li></ul></div><div style='margin: 20px 0;'><p style='color: #66BB6A; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-check' style='margin-right: 6px;'></i>Setup Required</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li>Graph construction (~2h)</li><li>Entity extraction setup</li><li>Initial data processing</li></ul></div></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class='pipeline-card' style='background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(76, 175, 80, 0.06)); border: 2px solid rgba(76, 175, 80, 0.4); border-radius: 16px; padding: 28px; height: 100%; box-shadow: 0 8px 16px rgba(76, 175, 80, 0.1);'><div style='text-align: center; margin-bottom: 24px;'><div style='background: rgba(76, 175, 80, 0.15); border-radius: 12px; padding: 16px; display: inline-block; margin-bottom: 12px;'><i class='fa-solid fa-share-nodes' style='font-size: 40px; color: #4CAF50;'></i></div><h3 style='color: #4CAF50; margin: 0; font-size: 22px; font-weight: 600;'>GraphRAG on TigerGraph</h3><p style='color: #66BB6A; font-size: 12px; margin-top: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'>TigerGraph-Powered Knowledge Graph</p></div><div style='background: rgba(255,255,255,0.04); border-radius: 10px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(76, 175, 80, 0.2);'><p style='color: #E8E8E8; font-size: 13px; margin: 0 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>Execution Flow</p><div style='margin-top: 12px; padding: 14px; background: rgba(0,0,0,0.4); border-radius: 8px; border-left: 4px solid #4CAF50;'><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-user' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>User Query</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Extract Entities ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-share-nodes' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>TigerGraph Multi-Hop Traversal</p><div style='text-align: center; color: #888; font-size: 10px; margin: 8px 0;'>↓ Explicit Relationships ↓</div><p style='color: #FFF; margin: 6px 0; font-size: 13px; line-height: 1.6;'><i class='fa-solid fa-brain' style='color: #4CAF50; margin-right: 8px; font-size: 12px;'></i>Accurate Response</p></div></div><div style='margin: 20px 0;'><p style='color: #66BB6A; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-star' style='margin-right: 6px; color: #FFD700;'></i>Advantages</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li><strong style='color: #66BB6A;'>100% factually accurate</strong></li><li>Perfect multi-hop reasoning</li><li>Explicit relationships</li><li>Lower token usage</li></ul></div><div style='margin: 20px 0;'><p style='color: #66BB6A; font-size: 12px; margin: 8px 0 12px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'><i class='fa-solid fa-check' style='margin-right: 6px;'></i>Setup Required</p><ul style='color: #B0BEC5; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.8;'><li>Graph construction (~2h)</li><li>Entity extraction setup</li><li>Initial data processing</li></ul></div></div>""", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # DETAILED WORKFLOW SECTION
@@ -177,7 +177,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["LLM-Only", "Basic RAG", "GraphRAG"])
+tab1, tab2, tab3 = st.tabs(["LLM-Only", "Basic RAG", "GraphRAG on TigerGraph"])
 
 with tab1:
     st.markdown("<div style='margin-bottom: 16px;'><i class='fa-solid fa-circle' style='color: #F44336; margin-right: 8px; font-size: 14px;'></i><span style='color: #F44336; font-weight: 600; font-size: 14px;'>LLM-Only Baseline</span></div>", unsafe_allow_html=True)
@@ -246,19 +246,20 @@ with tab2:
         """, unsafe_allow_html=True)
 
 with tab3:
-    st.markdown("<div style='margin-bottom: 16px;'><i class='fa-solid fa-circle' style='color: #4CAF50; margin-right: 8px; font-size: 14px;'></i><span style='color: #4CAF50; font-weight: 600; font-size: 14px;'>GraphRAG</span></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-bottom: 16px;'><i class='fa-solid fa-circle' style='color: #4CAF50; margin-right: 8px; font-size: 14px;'></i><span style='color: #4CAF50; font-weight: 600; font-size: 14px;'>GraphRAG on TigerGraph</span></div>", unsafe_allow_html=True)
     col_a, col_b = st.columns([1, 1.2], gap="large")
     with col_a:
         st.markdown("""
         <div style='background: rgba(76, 175, 80, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #4CAF50;'>
             <h4 style='color: #4CAF50; margin-top: 0;'><i class='fa-solid fa-cogs' style='margin-right: 8px;'></i>How It Works</h4>
             <ol style='color: #CCC; font-size: 14px; line-height: 1.8;'>
-                <li><strong>Build graph</strong> from dataset: extract entities + relationships</li>
-                <li><strong>Extract entities</strong> from user query</li>
-                <li><strong>Traverse graph</strong> up to 2 hops from matched entities</li>
-                <li><strong>Collect subgraph</strong> with all connected nodes/edges</li>
-                <li><strong>Format for LLM</strong> as structured graph context</li>
-                <li><strong>Generate answer</strong> using explicit relationships</li>
+                <li><strong>Build TigerGraph</strong> from dataset: extract entities + relationships using LLM</li>
+                <li><strong>Store in TigerGraph</strong>: vertices (entities) and edges (relationships)</li>
+                <li><strong>Extract entities</strong> from user query using NLP</li>
+                <li><strong>Execute GSQL queries</strong> to traverse graph up to 2 hops</li>
+                <li><strong>Collect subgraph</strong> with all connected nodes/edges from TigerGraph</li>
+                <li><strong>Format for LLM</strong> as structured graph context with relationships</li>
+                <li><strong>Generate answer</strong> grounded in TigerGraph relationships</li>
             </ol>
         </div>
         """, unsafe_allow_html=True)
@@ -270,7 +271,8 @@ with tab3:
             <ul style='color: #CCC; font-size: 14px; line-height: 1.8;'>
                 <li><i class='fa-solid fa-star' style='color: #FFD700; margin-right: 6px;'></i><strong>100% factually accurate</strong></li>
                 <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>Solves multi-hop reasoning</li>
-                <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>Explicit relationship mapping</li>
+                <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>Explicit relationships via TigerGraph</li>
+                <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>GSQL-optimized traversal</li>
                 <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>Lower token usage</li>
                 <li><i class='fa-solid fa-check' style='color: #4CAF50; margin-right: 6px;'></i>Deterministic results</li>
             </ul>
@@ -306,7 +308,7 @@ for metric, llm_val, rag_val, graph_val in metrics:
 
 table_html = f"""<div class='table-wrapper'>
 <table style='width: 100%; border-collapse: collapse; background: rgba(20, 30, 50, 0.8);'>
-<thead><tr style='background: rgba(33, 150, 243, 0.15); border-bottom: 2px solid rgba(255,255,255,0.1);'><th style='padding: 18px 20px; text-align: left; color: #2196F3; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'>Metric</th><th style='padding: 18px 20px; text-align: center; color: #F44336; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>LLM-Only</th><th style='padding: 18px 20px; text-align: center; color: #FF9800; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>Basic RAG</th><th style='padding: 18px 20px; text-align: center; color: #4CAF50; font-weight: 600;'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>GraphRAG</th></tr></thead>
+<thead><tr style='background: rgba(33, 150, 243, 0.15); border-bottom: 2px solid rgba(255,255,255,0.1);'><th style='padding: 18px 20px; text-align: left; color: #2196F3; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'>Metric</th><th style='padding: 18px 20px; text-align: center; color: #F44336; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>LLM-Only</th><th style='padding: 18px 20px; text-align: center; color: #FF9800; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.05);'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>Basic RAG</th><th style='padding: 18px 20px; text-align: center; color: #4CAF50; font-weight: 600;'><i class='fa-solid fa-circle' style='margin-right: 8px;'></i>GraphRAG on TigerGraph</th></tr></thead>
 <tbody>{table_rows}</tbody>
 </table>
 </div>"""
@@ -319,6 +321,77 @@ st.markdown("""
         <i class='fa-solid fa-lightbulb' style='color: #FFD700; margin-right: 8px;'></i>
         <strong style='color: #E8E8E8;'>Pro Tip:</strong> Choose GraphRAG when accuracy and multi-hop reasoning are critical. Use Basic RAG for general document retrieval. Use LLM-Only only for low-stakes queries where speed is paramount.
     </p>
+</div>
+""", unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIGERGRAPH CAPABILITIES SECTION
+# ─────────────────────────────────────────────────────────────────────────────
+
+st.markdown("""
+<div class='section-header'>
+    <h2><i class='fa-solid fa-network-wired' style='color: #FF6B6B;'></i>TigerGraph: The GraphRAG Engine</h2>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<p style='color: #AAA; font-size: 15px; line-height: 1.8;'>
+TigerGraph powers GraphRAG's superior accuracy through purpose-built graph database capabilities:
+</p>
+""", unsafe_allow_html=True)
+
+col_tg1, col_tg2, col_tg3 = st.columns(3)
+
+with col_tg1:
+    st.markdown("""
+    <div style='background: rgba(255, 107, 107, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #FF6B6B;'>
+        <h4 style='color: #FF6B6B; margin-top: 0;'><i class='fa-solid fa-project-diagram' style='margin-right: 8px;'></i>Graph Storage</h4>
+        <ul style='color: #CCC; font-size: 13px; line-height: 1.8; margin: 0; padding-left: 20px;'>
+            <li>Vertices: Entity instances (people, places, things)</li>
+            <li>Edges: Explicit relationships with types</li>
+            <li>Properties: Rich metadata on both vertices & edges</li>
+            <li>Schema: Typed graph structure for validation</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_tg2:
+    st.markdown("""
+    <div style='background: rgba(255, 193, 7, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #FFC107;'>
+        <h4 style='color: #FFC107; margin-top: 0;'><i class='fa-solid fa-bolt' style='margin-right: 8px;'></i>GSQL Traversal</h4>
+        <ul style='color: #CCC; font-size: 13px; line-height: 1.8; margin: 0; padding-left: 20px;'>
+            <li>Native GSQL language for graph queries</li>
+            <li>Sub-millisecond traversal response times</li>
+            <li>Parallel graph traversal across vertices</li>
+            <li>Custom aggregations and filtering</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_tg3:
+    st.markdown("""
+    <div style='background: rgba(76, 175, 80, 0.1); border-radius: 8px; padding: 20px; border-left: 4px solid #4CAF50;'>
+        <h4 style='color: #4CAF50; margin-top: 0;'><i class='fa-solid fa-magnifying-glass-chart' style='margin-right: 8px;'></i>Multi-Hop Reasoning</h4>
+        <ul style='color: #CCC; font-size: 13px; line-height: 1.8; margin: 0; padding-left: 20px;'>
+            <li>Navigate 2-3 relationship hops instantly</li>
+            <li>Find indirect connections between entities</li>
+            <li>Gather context across document boundaries</li>
+            <li>100% grounded in explicit relationships</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("""
+<div style='background: rgba(76, 175, 80, 0.05); border-radius: 8px; padding: 20px; border: 1px solid rgba(76, 175, 80, 0.3); margin-top: 20px;'>
+    <h4 style='color: #66BB6A; margin-top: 0;'><i class='fa-solid fa-diagram-successor' style='margin-right: 8px;'></i>GraphRAG Query Flow with TigerGraph</h4>
+    <div style='color: #CCC; font-size: 13px; line-height: 2.2; font-family: monospace; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 6px;'>
+        <i class='fa-solid fa-circle-1' style='color:#4CAF50; margin-right: 8px;'></i>User Query → Entity Recognition<br>
+        <i class='fa-solid fa-circle-2' style='color:#4CAF50; margin-right: 8px;'></i>Extract Query Entities → TigerGraph Lookup<br>
+        <i class='fa-solid fa-circle-3' style='color:#4CAF50; margin-right: 8px;'></i>Execute GSQL Traversal → Find Connected Entities<br>
+        <i class='fa-solid fa-circle-4' style='color:#4CAF50; margin-right: 8px;'></i>Collect Subgraph → All Vertices & Relationships<br>
+        <i class='fa-solid fa-circle-5' style='color:#4CAF50; margin-right: 8px;'></i>Format Context → Structured JSON for LLM<br>
+        <i class='fa-solid fa-circle-6' style='color:#4CAF50; margin-right: 8px;'></i>LLM Generation → Answer Grounded in Graph<br>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 

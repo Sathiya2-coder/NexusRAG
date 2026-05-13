@@ -13,7 +13,15 @@ render_header()
 
 # ── Dataset Explorer ────────────────────────────────────────────────────────
 st.markdown("<h2 style='color:#FAFAFA;margin-top:20px;'>WikiText-2 Dataset Explorer</h2>", unsafe_allow_html=True)
-st.markdown("Explore the raw dataset powering the NexusRAG benchmark. This dataset contains high-quality Wikipedia articles used for training and evaluating large language models.")
+st.markdown("""
+Explore the raw dataset powering the NexusRAG benchmark. This dataset contains high-quality Wikipedia articles used for training and evaluating large language models.
+
+**How it powers GraphRAG with TigerGraph:**
+- **Entity Extraction**: Raw text is processed to identify key entities (people, organizations, events, locations)
+- **Relationship Mapping**: LLM-powered extraction identifies explicit relationships between entities
+- **TigerGraph Storage**: Entities become vertices and relationships become edges in the knowledge graph
+- **Multi-Hop Traversal**: Complex queries leverage TigerGraph's GSQL engine to traverse multiple relationship hops
+""")
 
 data_path = "data/dataset.txt"
 
@@ -63,8 +71,17 @@ else:
         )
 
     with c_right:
-        st.subheader("Download")
-        st.markdown("Get the full raw text file for local benchmarking and graph construction.")
+        st.subheader("Download & Graph Use")
+        st.markdown("""
+Get the full raw text file for local benchmarking and TigerGraph construction.
+
+**Use with TigerGraph:**
+1. Download the dataset
+2. Run entity/relationship extraction
+3. Bulk ingest into TigerGraph
+4. Execute GSQL queries for graph traversal
+5. Feed results to LLM for accurate answers
+        """)
         
         st.markdown('<div class="fa-marker-download"></div>', unsafe_allow_html=True)
         with open(data_path, "rb") as f:

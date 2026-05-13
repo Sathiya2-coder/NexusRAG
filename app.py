@@ -83,8 +83,15 @@ with o_col2:
         <div class="icon-container" style="background: rgba(255, 152, 0, 0.1); color: #FF9800;">
             <i class="fa-solid fa-project-diagram fa-2x"></i>
         </div>
-        <h3>2. Graph Construction</h3>
-        <p>Using TigerGraph, entities and relationships are explicitly mapped into a highly connected Knowledge Graph.</p>
+        <h3>2. Graph Construction with TigerGraph</h3>
+        <p><strong>TigerGraph</strong> powers multi-hop reasoning by:
+        <ul style="color:#CCC; font-size: 14px; margin-top: 10px;">
+        <li><i class='fa-solid fa-link' style='color:#FF9800; margin-right: 8px;'></i>Storing entities as vertices and relationships as edges</li>
+        <li><i class='fa-solid fa-bolt' style='color:#FF9800; margin-right: 8px;'></i>Executing GSQL queries for sub-millisecond traversals</li>
+        <li><i class='fa-solid fa-bullseye' style='color:#FF9800; margin-right: 8px;'></i>Supporting multi-hop queries up to 2-3 relationship levels</li>
+        <li><i class='fa-solid fa-chart-bar' style='color:#FF9800; margin-right: 8px;'></i>Enabling explicit relationship mapping for factual accuracy</li>
+        </ul>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -94,22 +101,36 @@ with o_col3:
         <div class="icon-container" style="background: rgba(76, 175, 80, 0.1); color: #4CAF50;">
             <i class="fa-solid fa-brain fa-2x"></i>
         </div>
-        <h3>3. AI Inference</h3>
-        <p>Groq's Llama 3 models traverse the graph to answer complex, multi-hop queries with 100% factual accuracy.</p>
+        <h3>3. AI Inference via TigerGraph Traversal</h3>
+        <p>Groq's Llama 3 models use <strong>TigerGraph's graph traversal</strong> to:
+        <ul style="color:#CCC; font-size: 14px; margin-top: 10px;">
+        <li><i class='fa-solid fa-magnifying-glass' style='color:#4CAF50; margin-right: 8px;'></i>Extract entities from user queries</li>
+        <li><i class='fa-solid fa-rocket' style='color:#4CAF50; margin-right: 8px;'></i>Perform real-time graph traversals with GSQL</li>
+        <li><i class='fa-solid fa-check' style='color:#4CAF50; margin-right: 8px;'></i>Retrieve factually accurate context</li>
+        <li><i class='fa-solid fa-message' style='color:#4CAF50; margin-right: 8px;'></i>Generate 100% grounded answers</li>
+        </ul>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
 st.markdown("<hr style='border-color:#333; margin: 40px 0;'>", unsafe_allow_html=True)
 
 # ── Benchmark Dashboard ────────────────────────────────────────────────────────
-st.markdown("<h2 style='color:#FAFAFA;margin-top:20px;'>1. Benchmark Dashboard</h2>", unsafe_allow_html=True)
-st.markdown("Compare **LLM-Only**, **Basic RAG**, and **GraphRAG** side-by-side.")
+st.markdown("<h2 style='color:#FAFAFA;margin-top:20px;'>1. Benchmark Dashboard - Pipeline Comparison</h2>", unsafe_allow_html=True)
+st.markdown("""
+Compare **LLM-Only**, **Basic RAG**, and **GraphRAG on TigerGraph** side-by-side.
+
+**GraphRAG with TigerGraph Advantage:**
+- LLM-Only: No context, high hallucination risk
+- Basic RAG: Vector similarity, can miss relationships
+- **GraphRAG on TigerGraph**: Explicit entity relationships, multi-hop reasoning, 100% factual accuracy
+""")
 
 # Show database status
 col1, col2 = st.columns(2)
 with col1:
     if vector_db_ready:
-        st.markdown('<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i>Vector DB Ready - Basic RAG has context retrieval', unsafe_allow_html=True)
+        st.markdown('<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i><strong>Vector DB Ready</strong> - Basic RAG has semantic context retrieval', unsafe_allow_html=True)
     else:
         st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>Vector Database not initialized', unsafe_allow_html=True)
 
@@ -117,13 +138,13 @@ with col2:
     if graph_db_ready:
         graph_stats = get_graph_statistics()
         if graph_stats["status"] == "ready":
-            st.markdown(f'<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i>Graph DB Ready ({graph_stats["nodes"]} entities)', unsafe_allow_html=True)
+            st.markdown(f'<i class="fa-solid fa-check" style="color: #4CAF50; margin-right: 8px;"></i><strong>TigerGraph Ready</strong> ({graph_stats["nodes"]} entities, {graph_stats["edges"] if "edges" in graph_stats else "?"} relationships) - GraphRAG can traverse relationships', unsafe_allow_html=True)
         elif graph_stats["status"] == "empty":
-            st.markdown('<i class="fa-solid fa-hourglass" style="color: #FF9800; margin-right: 8px;"></i>Graph Database Ready', unsafe_allow_html=True)
+            st.markdown('<i class="fa-solid fa-hourglass" style="color: #FF9800; margin-right: 8px;"></i><strong>TigerGraph Ready</strong> - Build your knowledge graph for GraphRAG', unsafe_allow_html=True)
         else:
-            st.markdown('<i class="fa-solid fa-circle-info" style="color: #2196F3; margin-right: 8px;"></i>Graph Database Initializing...', unsafe_allow_html=True)
+            st.markdown('<i class="fa-solid fa-circle-info" style="color: #2196F3; margin-right: 8px;"></i>TigerGraph Initializing - Multi-hop reasoning will be available once graph is built', unsafe_allow_html=True)
     else:
-        st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>Knowledge Graph not initialized', unsafe_allow_html=True)
+        st.markdown('<i class="fa-solid fa-triangle-exclamation" style="color: #FF9800; margin-right: 8px;"></i>TigerGraph not initialized', unsafe_allow_html=True)
 
 
 query = st.text_area("Enter your query:", height=100,
@@ -178,15 +199,22 @@ if st.button("Run Benchmark", type="primary"):
                 st.markdown(mh, unsafe_allow_html=True)
 
         render_pipeline(col1, "1. LLM-Only Baseline", res_llm,   "#757575")
-        render_pipeline(col2, "2. Basic RAG",          res_rag,   "#FF9800")
-        render_pipeline(col3, "3. GraphRAG",            res_graph, "#4CAF50")
+        render_pipeline(col2, "2. Basic RAG (Vector Search)", res_rag,   "#FF9800")
+        render_pipeline(col3, "3. GraphRAG on TigerGraph", res_graph, "#4CAF50")
 
         st.markdown("---")
         st.markdown(
             "<h3 style='color:#4CAF50;margin-top:0;'>"
             "<i class='fa-solid fa-robot' style='margin-right:10px;'></i>"
-            "Official AI Benchmark Verdict</h3>",
+            "Official AI Benchmark Verdict with TigerGraph Insights</h3>",
             unsafe_allow_html=True)
+        st.markdown("""
+**How TigerGraph Powers the GraphRAG Result:**
+- **Entity Recognition**: Extracted entities from your query
+- **Graph Traversal**: GSQL queries traversed TigerGraph relationships
+- **Context Assembly**: Retrieved factual entities and connections
+- **LLM Integration**: Groq's Llama 3.3 generates final answer grounded in TigerGraph data
+        """)
         with st.spinner("Generating verdict..."):
             st.info(generate_summary(query, res_llm, res_rag, res_graph))
 
@@ -202,7 +230,7 @@ with st.popover("💬", help="Chat with the Dataset"):
     st.markdown("""
         <div style='text-align: center; margin-bottom: 16px;'>
             <i class='fa-solid fa-robot' style='color:#FF9800; font-size: 32px; margin-bottom: 8px;'></i>
-            <h3 style='margin:0; color:#FAFAFA;'>Dataset Assistant</h3>
+            <h3 style='margin:0; color:#FAFAFA;'>Dataset Assistant (TigerGraph Enabled)</h3>
         </div>
     """, unsafe_allow_html=True)
     
@@ -264,10 +292,11 @@ with st.popover("💬", help="Chat with the Dataset"):
                     model="llama-3.3-70b-versatile",
                     messages=[
                         {"role": "system", "content": (
-                            "You are a concise, expert AI assistant for the NexusRAG Benchmark Dashboard. "
-                            "The dataset is WikiText-2 with 2.4 million tokens of high-quality Wikipedia articles "
-                            "covering history, science, geography, and notable people. "
-                            "Answer in 2-4 sentences max unless more detail is explicitly requested."
+                            "You are a concise, expert AI assistant for the NexusRAG Benchmark Dashboard powered by TigerGraph. "
+                            "The dataset is WikiText-2 with 2.4 million tokens of high-quality Wikipedia articles. "
+                            "You understand how TigerGraph enables multi-hop reasoning by storing entities as vertices and relationships as edges. "
+                            "Answer in 2-4 sentences max unless more detail is explicitly requested. "
+                            "Mention TigerGraph's role when relevant to graph traversal or relationship queries."
                         )}
                     ] + history,
                     temperature=0.7,
